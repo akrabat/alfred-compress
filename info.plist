@@ -8,7 +8,20 @@
 	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
-		<key>7C7F0602-B9F2-4FFA-870C-CEA945590CF4</key>
+		<key>3A44A72A-4782-4DDF-9D56-C1ADC13627DB</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>EAEDC47F-17B0-4A14-A448-E15ED2F07222</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>C0A94FF9-311C-4085-9B22-2C400D533129</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -35,21 +48,17 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>acceptsfiles</key>
-				<true/>
 				<key>acceptsmulti</key>
 				<integer>0</integer>
-				<key>acceptstext</key>
-				<false/>
-				<key>acceptsurls</key>
-				<false/>
+				<key>filetypes</key>
+				<array/>
 				<key>name</key>
 				<string>Compress</string>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.trigger.universalaction</string>
+			<string>alfred.workflow.trigger.action</string>
 			<key>uid</key>
-			<string>7C7F0602-B9F2-4FFA-870C-CEA945590CF4</string>
+			<string>C0A94FF9-311C-4085-9B22-2C400D533129</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -78,30 +87,54 @@ zip -r "$query.zip" "$query"</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>acceptsmulti</key>
+				<integer>0</integer>
+				<key>filetypes</key>
+				<array/>
+				<key>name</key>
+				<string>Zip</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.action</string>
+			<key>uid</key>
+			<string>3A44A72A-4782-4DDF-9D56-C1ADC13627DB</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string># Alfred Compress
 
 A universal action that compresses the selected file or folder to create a zip file in the same directory.
 
-To use, select a file or folder in Finder and trigger Alfred's universal actions. Start typing "compress" in order to filter and then press enter. A Zip file of the same name as the selection will appear in the Finder window.
+To use, select a file or folder in Finder and trigger Alfred's universal actions. Start typing "compress" or "zip" in order to find it and then press enter. A Zip file of the same name as the selection will appear in the Finder window.
 
 ![Screenshot of Compress in action](readme-assets/screenshot.png)</string>
 	<key>uidata</key>
 	<dict>
-		<key>7C7F0602-B9F2-4FFA-870C-CEA945590CF4</key>
+		<key>3A44A72A-4782-4DDF-9D56-C1ADC13627DB</key>
 		<dict>
 			<key>xpos</key>
 			<real>30</real>
 			<key>ypos</key>
-			<real>75</real>
+			<real>170</real>
+		</dict>
+		<key>C0A94FF9-311C-4085-9B22-2C400D533129</key>
+		<dict>
+			<key>xpos</key>
+			<real>30</real>
+			<key>ypos</key>
+			<real>60</real>
 		</dict>
 		<key>EAEDC47F-17B0-4A14-A448-E15ED2F07222</key>
 		<dict>
 			<key>xpos</key>
-			<real>225</real>
+			<real>275</real>
 			<key>ypos</key>
-			<real>75</real>
+			<real>125</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -109,7 +142,7 @@ To use, select a file or folder in Finder and trigger Alfred's universal actions
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.1</string>
+	<string>0.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/akrabat/alfred-compress</string>
 </dict>
