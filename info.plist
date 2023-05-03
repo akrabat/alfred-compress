@@ -142,7 +142,7 @@ To use, select a file or folder in Finder and trigger Alfred's universal actions
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>0.2</string>
+	<string>0.4</string>
 	<key>webaddress</key>
 	<string>https://github.com/akrabat/alfred-compress</string>
 </dict>
