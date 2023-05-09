@@ -8,7 +8,7 @@
 	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
-		<key>3A44A72A-4782-4DDF-9D56-C1ADC13627DB</key>
+		<key>C0A94FF9-311C-4085-9B22-2C400D533129</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -21,11 +21,11 @@
 				<false/>
 			</dict>
 		</array>
-		<key>C0A94FF9-311C-4085-9B22-2C400D533129</key>
+		<key>EAEDC47F-17B0-4A14-A448-E15ED2F07222</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>EAEDC47F-17B0-4A14-A448-E15ED2F07222</string>
+				<string>0D85CD02-AEC2-4A82-B3EC-EEF2A45CFA98</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -48,12 +48,33 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<false/>
+				<key>removeextension</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Compress to Zip</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>0D85CD02-AEC2-4A82-B3EC-EEF2A45CFA98</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>acceptsmulti</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>filetypes</key>
 				<array/>
 				<key>name</key>
-				<string>Compress</string>
+				<string>Compress to Zip</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.trigger.action</string>
@@ -71,8 +92,44 @@
 				<integer>102</integer>
 				<key>script</key>
 				<string>query="$@"
+num_args=$#
 
-zip -r "$query.zip" "$query"</string>
+# Change to directory of first selected file
+dir="$(realpath $(dirname $1))"
+cd $dir
+
+# Determine zip filename: 
+#  - files.zip for multiple
+#  - dirname.zip for a single directory
+#  - filename-without-ext.zip for a single file 
+filename="files.zip"
+if [ $num_args -eq 1 ] ; then
+    if  [ -d "$1" ]; then
+        filename="$(basename "$1").zip"
+    else
+        filename="$(echo $(basename "$1") | cut -f 1 -d '.').zip"
+    fi
+fi
+
+if  [ -f "$filename" ]; then
+    echo "Error: '$filename' already exists"
+    exit 1
+fi
+
+# create a temporary file to hold list of filename and autoremove on exit
+temp_file=$(mktemp -q /tmp/bar.XXXXXX || exit 1)
+trap "rm -f $temp_file" 0 2 3 15
+ 
+
+# iterate over supplied files and remove full path
+for var in "$@"
+do
+    echo "$(basename "$var")" &gt;&gt; $temp_file
+done
+
+zip -qr@ "$filename" &lt; $temp_file
+
+echo "Created '$filename'"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -87,62 +144,45 @@ zip -r "$query.zip" "$query"</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>acceptsmulti</key>
-				<integer>0</integer>
-				<key>filetypes</key>
-				<array/>
-				<key>name</key>
-				<string>Zip</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.trigger.action</string>
-			<key>uid</key>
-			<string>3A44A72A-4782-4DDF-9D56-C1ADC13627DB</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
 	</array>
 	<key>readme</key>
 	<string># Alfred Compress
 
 A universal action that compresses the selected file or folder to create a zip file in the same directory.
 
-To use, select a file or folder in Finder and trigger Alfred's universal actions. Start typing "compress" or "zip" in order to find it and then press enter. A Zip file of the same name as the selection will appear in the Finder window.
+To use, select a file or folder in Finder and trigger Alfred's universal actions. Start typing "compress" or "zip" in order to find the "Compress to Zip" action and then press enter to create a Zip file. 
+
+For a single selection, a Zip file of the same name as the selection will appear in the Finder window. For a selection of multiple files/folders, then the Zip file will be named "files.zip".
 
 ![Screenshot of Compress in action](readme-assets/screenshot.png)</string>
 	<key>uidata</key>
 	<dict>
-		<key>3A44A72A-4782-4DDF-9D56-C1ADC13627DB</key>
+		<key>0D85CD02-AEC2-4A82-B3EC-EEF2A45CFA98</key>
 		<dict>
 			<key>xpos</key>
-			<real>30</real>
+			<real>380</real>
 			<key>ypos</key>
-			<real>170</real>
+			<real>125</real>
 		</dict>
 		<key>C0A94FF9-311C-4085-9B22-2C400D533129</key>
 		<dict>
 			<key>xpos</key>
 			<real>30</real>
 			<key>ypos</key>
-			<real>60</real>
+			<real>125</real>
 		</dict>
 		<key>EAEDC47F-17B0-4A14-A448-E15ED2F07222</key>
 		<dict>
 			<key>xpos</key>
-			<real>275</real>
+			<real>205</real>
 			<key>ypos</key>
 			<real>125</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
 	<array/>
-	<key>variablesdontexport</key>
-	<array/>
 	<key>version</key>
-	<string>0.4</string>
+	<string>0.5</string>
 	<key>webaddress</key>
 	<string>https://github.com/akrabat/alfred-compress</string>
 </dict>
