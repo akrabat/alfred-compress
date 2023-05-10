@@ -48,6 +48,66 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>num_args=$#
+
+# Change to directory of first selected file
+dir="$(realpath "$(dirname $1)")"
+cd $dir
+
+# Determine zip filename: 
+#  - files.zip for multiple
+#  - dirname.zip for a single directory
+#  - filename-without-ext.zip for a single file 
+filename="files.zip"
+if [ $num_args -eq 1 ] ; then
+    if  [ -d "$1" ]; then
+        filename="$(basename "$1").zip"
+    else
+        filename="$(echo $(basename "$1") | cut -f 1 -d '.').zip"
+    fi
+fi
+
+if  [ -f "$filename" ]; then
+    echo "Error: '$filename' already exists"
+    exit 1
+fi
+
+# create a temporary file to hold list of filename and autoremove on exit
+temp_file=$(mktemp -q /tmp/alfred-compress.XXXXXX || exit 1)
+trap "rm -f $temp_file" EXIT
+ 
+
+# iterate over supplied files and remove full path
+for var in "$@"
+do
+    echo "$(basename "$var")" &gt;&gt; $temp_file
+done
+
+zip -qr@ "$filename" &lt; $temp_file
+
+echo "Created '$filename'"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>5</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>EAEDC47F-17B0-4A14-A448-E15ED2F07222</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -82,67 +142,6 @@
 			<string>C0A94FF9-311C-4085-9B22-2C400D533129</string>
 			<key>version</key>
 			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>102</integer>
-				<key>script</key>
-				<string>query="$@"
-num_args=$#
-
-# Change to directory of first selected file
-dir="$(realpath $(dirname $1))"
-cd $dir
-
-# Determine zip filename: 
-#  - files.zip for multiple
-#  - dirname.zip for a single directory
-#  - filename-without-ext.zip for a single file 
-filename="files.zip"
-if [ $num_args -eq 1 ] ; then
-    if  [ -d "$1" ]; then
-        filename="$(basename "$1").zip"
-    else
-        filename="$(echo $(basename "$1") | cut -f 1 -d '.').zip"
-    fi
-fi
-
-if  [ -f "$filename" ]; then
-    echo "Error: '$filename' already exists"
-    exit 1
-fi
-
-# create a temporary file to hold list of filename and autoremove on exit
-temp_file=$(mktemp -q /tmp/bar.XXXXXX || exit 1)
-trap "rm -f $temp_file" 0 2 3 15
- 
-
-# iterate over supplied files and remove full path
-for var in "$@"
-do
-    echo "$(basename "$var")" &gt;&gt; $temp_file
-done
-
-zip -qr@ "$filename" &lt; $temp_file
-
-echo "Created '$filename'"</string>
-				<key>scriptargtype</key>
-				<integer>1</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>5</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>EAEDC47F-17B0-4A14-A448-E15ED2F07222</string>
-			<key>version</key>
-			<integer>2</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -182,7 +181,7 @@ For a single selection, a Zip file of the same name as the selection will appear
 	<key>userconfigurationconfig</key>
 	<array/>
 	<key>version</key>
-	<string>0.5</string>
+	<string>0.6</string>
 	<key>webaddress</key>
 	<string>https://github.com/akrabat/alfred-compress</string>
 </dict>
