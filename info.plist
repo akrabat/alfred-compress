@@ -20,6 +20,29 @@
 				<key>vitoclose</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>DFCA9E99-EEF1-438F-B5B8-034F04C21F5B</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Compress selection to individual ZIP files</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>DFCA9E99-EEF1-438F-B5B8-034F04C21F5B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0D85CD02-AEC2-4A82-B3EC-EEF2A45CFA98</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
 		</array>
 		<key>EAEDC47F-17B0-4A14-A448-E15ED2F07222</key>
 		<array>
@@ -108,6 +131,23 @@ echo "Created '$filename'"</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>acceptsmulti</key>
+				<integer>1</integer>
+				<key>filetypes</key>
+				<array/>
+				<key>name</key>
+				<string>Compress to Zip</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.action</string>
+			<key>uid</key>
+			<string>C0A94FF9-311C-4085-9B22-2C400D533129</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -129,19 +169,49 @@ echo "Created '$filename'"</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>acceptsmulti</key>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>num_args=$#
+
+# Change to directory of first selected file
+dir="$(realpath "$(dirname $1)")"
+cd $dir
+
+# Iterate over supplied list and zip each one
+for var in "$@"
+do
+	toZip="$(basename "$var")"
+    if  [ -d "$var" ]; then
+        filename="$(basename "$toZip").zip"
+    else
+        filename="$(echo $(basename "$toZip") | cut -f 1 -d '.').zip"
+    fi
+
+    zip -qr@ "$filename" "$toZip"
+done
+
+# Output message for notification
+if [ $num_args -eq 1 ] ; then
+    echo "Created '$filename'"
+else
+	echo "Created ZIP files"
+fi</string>
+				<key>scriptargtype</key>
 				<integer>1</integer>
-				<key>filetypes</key>
-				<array/>
-				<key>name</key>
-				<string>Compress to Zip</string>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>5</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.trigger.action</string>
+			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>C0A94FF9-311C-4085-9B22-2C400D533129</string>
+			<string>DFCA9E99-EEF1-438F-B5B8-034F04C21F5B</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -153,22 +223,31 @@ To use, select a file or folder in Finder and trigger Alfred's universal actions
 
 For a single selection, a Zip file of the same name as the selection will appear in the Finder window. For a selection of multiple files/folders, then the Zip file will be named "files.zip".
 
+If you press The Option(⌥) key, then each selection will be compressed to a separate ZIP file.
+
 ![Screenshot of Compress in action](readme-assets/screenshot.png)</string>
 	<key>uidata</key>
 	<dict>
 		<key>0D85CD02-AEC2-4A82-B3EC-EEF2A45CFA98</key>
 		<dict>
 			<key>xpos</key>
-			<real>380</real>
+			<real>390</real>
 			<key>ypos</key>
-			<real>125</real>
+			<real>190</real>
 		</dict>
 		<key>C0A94FF9-311C-4085-9B22-2C400D533129</key>
 		<dict>
 			<key>xpos</key>
 			<real>30</real>
 			<key>ypos</key>
-			<real>125</real>
+			<real>190</real>
+		</dict>
+		<key>DFCA9E99-EEF1-438F-B5B8-034F04C21F5B</key>
+		<dict>
+			<key>xpos</key>
+			<real>205</real>
+			<key>ypos</key>
+			<real>255</real>
 		</dict>
 		<key>EAEDC47F-17B0-4A14-A448-E15ED2F07222</key>
 		<dict>
@@ -181,7 +260,7 @@ For a single selection, a Zip file of the same name as the selection will appear
 	<key>userconfigurationconfig</key>
 	<array/>
 	<key>version</key>
-	<string>0.6</string>
+	<string>0.7</string>
 	<key>webaddress</key>
 	<string>https://github.com/akrabat/alfred-compress</string>
 </dict>
